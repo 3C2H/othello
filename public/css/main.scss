@@ -7,7 +7,8 @@
 @import "node_modules/@fortawesome/fontawesome-free/scss/regular";
 @import "node_modules/@fortawesome/fontawesome-free/scss/solid";
 
-@import "themes/default/default";
+@import "themes/default/othello";
+// @import "themes/default/default";
 
 // Scaffolding
 // -------------------------
@@ -18,8 +19,8 @@ html {
 }
 
 body {
-  padding-top: 80px;
-  margin-bottom: 75px;
+  // padding-top: 80px;
+  margin-bottom: 50px;
   font-size: 14px;
 }
 
@@ -42,6 +43,31 @@ textarea {
   resize: vertical;
 }
 
+// Title (in header)
+// -------------------------
+
+.blackstripe {
+  height: 5vh;
+  background-color: black; 
+}
+
+.title-banner {
+  height: 20vh;
+  background-color: rgba(255, 0, 0, 0.8);
+  text-align: center;
+  line-height: 20vh ;
+}
+
+.title-banner .title-link{
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 7vh;
+  letter-spacing: 0.6px;
+  word-spacing: 2px;
+  color: white;
+  font-weight: 300;
+  text-decoration: none;
+}
+
 // Navbar
 // -------------------------
 
@@ -51,14 +77,15 @@ textarea {
   margin: -15px 15px -15px;
 }
 
-.navbar{
+.navbar {
   padding-top: 0px;
   padding-bottom: 0px;
   margin-bottom: 20px;
   display: block;
+  background-color: rgb(50, 50, 50);
 }
 
-.navbar-brand{
+.navbar-brand {
   font-size: 18px;
   float: left;
 }
@@ -77,6 +104,20 @@ textarea {
 .dropdown-menu {
   left: initial;
   right: 0;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.nav-item :hover {
+  background-color: rgb(65, 65, 65);
+}
+
+li.nav-item.active {
+  background-color: rgb(65, 65, 65);
 }
 
 /*

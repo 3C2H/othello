@@ -3119,14 +3119,14 @@ input[type="button"].btn-block {
     display: none; }
 
 .navbar-light .navbar-brand {
-  color: #4da5f4; }
+  color: #ff0000; }
   .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
-    color: #4da5f4; }
+    color: #ff0000; }
 
 .navbar-light .navbar-nav .nav-link {
   color: #252525; }
   .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus {
-    color: #4da5f4; }
+    color: #cc0000; }
   .navbar-light .navbar-nav .nav-link.disabled {
     color: rgba(0, 0, 0, 0.3); }
 
@@ -3134,7 +3134,7 @@ input[type="button"].btn-block {
 .navbar-light .navbar-nav .active > .nav-link,
 .navbar-light .navbar-nav .nav-link.show,
 .navbar-light .navbar-nav .nav-link.active {
-  color: #4da5f4; }
+  color: #ff0000; }
 
 .navbar-light .navbar-toggler {
   color: #252525;
@@ -3146,9 +3146,9 @@ input[type="button"].btn-block {
 .navbar-light .navbar-text {
   color: #252525; }
   .navbar-light .navbar-text a {
-    color: #4da5f4; }
+    color: #ff0000; }
     .navbar-light .navbar-text a:hover, .navbar-light .navbar-text a:focus {
-      color: #4da5f4; }
+      color: #ff0000; }
 
 .navbar-dark .navbar-brand {
   color: #fff; }
@@ -12934,8 +12934,7 @@ html {
   min-height: 100%; }
 
 body {
-  padding-top: 80px;
-  margin-bottom: 75px;
+  margin-bottom: 50px;
   font-size: 14px; }
 
 footer {
@@ -12950,6 +12949,25 @@ footer {
 textarea {
   resize: vertical; }
 
+.blackstripe {
+  height: 5vh;
+  background-color: black; }
+
+.title-banner {
+  height: 20vh;
+  background-color: rgba(255, 0, 0, 0.8);
+  text-align: center;
+  line-height: 20vh; }
+
+.title-banner .title-link {
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 7vh;
+  letter-spacing: 0.6px;
+  word-spacing: 2px;
+  color: white;
+  font-weight: 300;
+  text-decoration: none; }
+
 .navbar-nav img {
   width: 30px;
   min-height: 30px;
@@ -12959,7 +12977,8 @@ textarea {
   padding-top: 0px;
   padding-bottom: 0px;
   margin-bottom: 20px;
-  display: block; }
+  display: block;
+  background-color: #323232; }
 
 .navbar-brand {
   font-size: 18px;
@@ -12977,6 +12996,17 @@ textarea {
 .dropdown-menu {
   left: initial;
   right: 0; }
+
+.navbar-light .navbar-nav .nav-link {
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px; }
+
+.nav-item :hover {
+  background-color: #414141; }
+
+li.nav-item.active {
+  background-color: #414141; }
 
 /*
 * Solves Bootstrap 4 issue

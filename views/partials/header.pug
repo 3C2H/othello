@@ -1,21 +1,31 @@
-.navbar.navbar-light.fixed-top.navbar-expand-lg
+div.blackstripe
+div.title-banner
+  a.title-link(href='/') COMPAGNIE OTHELLO
+.navbar.navbar-light.navbar-expand-lg
   .container
-    a.navbar-brand(href='/')
-      i.fas.fa-cube
-      | Project name
+    //- a.navbar-brand(href='/')
+    //-   i.fas.fa-cube
+    //-   | Project name
     button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
       span.sr-only Toggle navigation
       span.navbar-toggler-icon
     .collapse.navbar-collapse
       ul.nav.navbar-nav
         li.nav-item(class=(title === 'Home') ? 'active' : undefined)
-          a.nav-link(href='/') Home
+          a.nav-link(href='/') Actualités
         li.nav-item(class=(title === 'API Examples') ? 'active' : undefined)
-          a.nav-link(href='/api') API Examples
+          a.nav-link(href='/api') Agenda
         li.nav-item(class=(title === 'Contact') ? 'active' : undefined)
-          a.nav-link(href='/contact') Contact
+          a.nav-link(href='/contact') Activités 
+          //- dropdown
         li.nav-item(class=(title === 'Status') ? 'active' : undefined)
-          a.nav-link(href='/status') Status
+          a.nav-link(href='/status') Cours
+          //- dropdown
+        li.nav-item(class=(title === 'Status') ? 'active' : undefined)
+          a.nav-link(href='/status') Coaching
+          //- dropdown
+        li.nav-item(class=(title === 'Status') ? 'active' : undefined)
+          a.nav-link(href='/status') Notre équipe    
       ul.nav.navbar-nav.ml-auto
         if !user
           li.nav-item(class=(title === 'Login') ? 'active' : undefined)
