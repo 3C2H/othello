@@ -1,0 +1,71 @@
+//- !--FOOTER CUSTOM--
+<footer class="navbar fixed-bottom content container-fluid footer footer-light footer-shadow">
+  <ul class="nav navbar-nav ml-1">
+    <li class="nav-item">
+      <a href="#" class="nav-link text-muted"> Terms of use
+    <li class="nav-item">
+      <a href="#" class="nav-link text-muted"> Privacy Policy
+    <li class="dropdown dropdown-language nav-item">
+      <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link">
+        <i class="flag-icon flag-icon-gb">
+          <span class="selected-language" French>
+            <i class="caret">
+      <div aria-labelledby="dropdown-flag" class="dropdown-menu dropdown-menu-right">
+        <a href="#" class="dropdown-item">
+          <i class="flag-icon flag-icon-fr"> French
+        <a href="#" class="dropdown-item">
+          <i class="flag-icon flag-icon-gb"> English
+        <a href="#" class="dropdown-item">
+          <i class="flag-icon flag-icon-es"> Spanish
+        <a href="#" class="dropdown-item">
+          <i class="flag-icon flag-icon-pt"> Portuguese
+    <form class="form-inline float-right">
+      <div class="input-group mb-0 mt-0">
+        <span class="input-group-prepand">
+          <button type="button" class="btn btn-secondary">
+            <i class="ft-monitor">
+              <input type="text" placeholder="Quick search..." aria-label="Amount" class="form-control">
+                <span class="input-group-append">
+          <button type="button" class="btn btn-outline-success"> Go!
+          <button type="button" class="btn btn-outline-primary">
+            <i class="la la-heart-o"> Logout
+
+
+
+//- block pageVars
+//-     - var pageTitle    = "Footer Components"
+//-     - var pageSubTitle = "Footer custom components"
+//-     - var description  = "Footer support custom components to provide more usability."
+//-     - var activeMenu   = "footer-components"
+//-   extends template
+//-   append footerConfig
+//-     - var footerType = "fixed-bottom"
+//-     - var footerColor = "footer-light"
+//-     - var footerBorder = true
+//- 
+//-   //- Template includes
+//-   //-------------------
+//-   block footer
+//-     include ../templates/sections/footer/footer-custom
+//-   append breadcrumbs
+//-     +breadcrumbs([{url:"index.html",name:"Home"},{url:"#",name:"Footer"}, {name:"Footer Components"}])
+//-   //- Include page content in page block
+//-   append content
+//-     include ../contents/footer-components.html
+//- 
+//-   //- Vendor CSS
+//-   //------------------------------
+//-   //- Add Vendor specific CSS
+//-   append vendorcss
+//-   //- Page CSS
+//-   //------------------------------
+//-   //- Add custom page specific CSS
+//-   append pagecss
+//-   //- Vendor JS
+//-   //------------------------------
+//-   //- Add vendor specific JS
+//-   append vendorjs
+//-   //- Page JS
+//-   //------------------------------
+//-   //- Add custom page specific JS
+//-   append pagejs
