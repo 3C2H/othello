@@ -16,23 +16,29 @@
 html {
   position: relative;
   min-height: 100%;
+  min-width: 100%;
 }
 
 body {
   // padding-top: 80px;
-  margin-bottom: 50px;
+  // margin-bottom: 50px;
+  height: 100%;
+  width: 100%;
   font-size: 14px;
 }
 
 footer {
-  position: absolute;
+  background-color: rgb(50, 50, 50);
+  color: white;
+  // position: absolute;
   bottom: 0;
   width: 100%;
-  height: 45px;
-  line-height: 45px;
+  height: 30px;
+  line-height: 30px;
 
-  p, ul {
-    margin-bottom: 0;
+  p, ul, a {
+    margin: 0;
+    padding: 0;
   }
 }
 
@@ -48,6 +54,7 @@ textarea {
 
 .blackstripe {
   height: 5vh;
+  width: 100%;
   background-color: black; 
 }
 
@@ -78,46 +85,64 @@ textarea {
 }
 
 .navbar {
-  padding-top: 0px;
-  padding-bottom: 0px;
   margin-bottom: 20px;
   display: block;
   background-color: rgb(50, 50, 50);
 }
 
-.navbar-brand {
-  font-size: 18px;
-  float: left;
-}
+// .navbar-brand {
+//   font-size: 18px;
+//   float: left;
+// }
 
-.navbar-toggler {
-  position: relative;
-  float: right;
-  margin-bottom: 8px;
-  margin-top: 8px;
-}
+// .navbar-toggler {
+//   position: relative;
+//   float: right;
+//   margin-bottom: 8px;
+//   margin-top: 8px;
+// }
 
-.navbar-toggler-icon {
-  font-size: 16px;
-}
+// .navbar-toggler-icon {
+//   font-size: 16px;
+// }
 
-.dropdown-menu {
-  left: initial;
-  right: 0;
-}
+// .dropdown-menu {
+//   left: initial;
+//   right: 0;
+// }
 
-.navbar-light .navbar-nav .nav-link {
+.navbar-light .navbar-nav .nav-link-header {
   color: white;
   padding-left: 20px;
   padding-right: 20px;
 }
 
-.nav-item :hover {
-  background-color: rgb(65, 65, 65);
+.nav-item-header :hover {
+  background-color: rgb(75, 75, 75);
 }
 
-li.nav-item.active {
-  background-color: rgb(65, 65, 65);
+li.nav-item-header.active {
+  background-color: rgb(75, 75, 75);
+}
+
+// Footer
+// -------------------------
+
+ul.footer {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-link {
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.footer-link.nav-link {
+  margin: 0;
+  padding: 0;
 }
 
 /*

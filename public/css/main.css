@@ -12931,26 +12931,31 @@ readers do not read off random characters that represent icons */
 
 html {
   position: relative;
-  min-height: 100%; }
+  min-height: 100%;
+  min-width: 100%; }
 
 body {
-  margin-bottom: 50px;
+  height: 100%;
+  width: 100%;
   font-size: 14px; }
 
 footer {
-  position: absolute;
+  background-color: #323232;
+  color: white;
   bottom: 0;
   width: 100%;
-  height: 45px;
-  line-height: 45px; }
-  footer p, footer ul {
-    margin-bottom: 0; }
+  height: 30px;
+  line-height: 30px; }
+  footer p, footer ul, footer a {
+    margin: 0;
+    padding: 0; }
 
 textarea {
   resize: vertical; }
 
 .blackstripe {
   height: 5vh;
+  width: 100%;
   background-color: black; }
 
 .title-banner {
@@ -12974,39 +12979,34 @@ textarea {
   margin: -15px 15px -15px; }
 
 .navbar {
-  padding-top: 0px;
-  padding-bottom: 0px;
   margin-bottom: 20px;
   display: block;
   background-color: #323232; }
 
-.navbar-brand {
-  font-size: 18px;
-  float: left; }
-
-.navbar-toggler {
-  position: relative;
-  float: right;
-  margin-bottom: 8px;
-  margin-top: 8px; }
-
-.navbar-toggler-icon {
-  font-size: 16px; }
-
-.dropdown-menu {
-  left: initial;
-  right: 0; }
-
-.navbar-light .navbar-nav .nav-link {
+.navbar-light .navbar-nav .nav-link-header {
   color: white;
   padding-left: 20px;
   padding-right: 20px; }
 
-.nav-item :hover {
-  background-color: #414141; }
+.nav-item-header :hover {
+  background-color: #4b4b4b; }
 
-li.nav-item.active {
-  background-color: #414141; }
+li.nav-item-header.active {
+  background-color: #4b4b4b; }
+
+ul.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; }
+
+.footer-link {
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px; }
+
+.footer-link.nav-link {
+  margin: 0;
+  padding: 0; }
 
 /*
 * Solves Bootstrap 4 issue
