@@ -1,53 +1,53 @@
-const passport = require('passport');
-const refresh = require('passport-oauth2-refresh');
-const axios = require('axios');
-const { Strategy: InstagramStrategy } = require('passport-instagram');
-const { Strategy: LocalStrategy } = require('passport-local');
-const { Strategy: FacebookStrategy } = require('passport-facebook');
-const { Strategy: SnapchatStrategy } = require('passport-snapchat');
-const { Strategy: TwitterStrategy } = require('passport-twitter');
-const { Strategy: GitHubStrategy } = require('passport-github');
-const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth');
-const { Strategy: LinkedInStrategy } = require('passport-linkedin-oauth2');
-const { Strategy: OpenIDStrategy } = require('passport-openid');
-const { OAuthStrategy } = require('passport-oauth');
-const { OAuth2Strategy } = require('passport-oauth');
-const _ = require('lodash');
-const moment = require('moment');
+const passport = require('passport')
+const refresh = require('passport-oauth2-refresh')
+const axios = require('axios')
+const { Strategy: InstagramStrategy } = require('passport-instagram')
+const { Strategy: LocalStrategy } = require('passport-local')
+const { Strategy: FacebookStrategy } = require('passport-facebook')
+const { Strategy: SnapchatStrategy } = require('passport-snapchat')
+const { Strategy: TwitterStrategy } = require('passport-twitter')
+const { Strategy: GitHubStrategy } = require('passport-github')
+const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth')
+const { Strategy: LinkedInStrategy } = require('passport-linkedin-oauth2')
+const { Strategy: OpenIDStrategy } = require('passport-openid')
+const { OAuthStrategy } = require('passport-oauth')
+const { OAuth2Strategy } = require('passport-oauth')
+const _ = require('lodash')
+const moment = require('moment')
 
-const User = require('../models/User');
+const User = require('../models/User')
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+  done(null, user.id)
+})
 
 passport.deserializeUser((id, done) => {
   User.findById(id, (err, user) => {
-    done(err, user);
-  });
-});
+    done(err, user)
+  })
+})
 
 /**
  * Sign in using Email and Password.
  */
 passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
   User.findOne({ email: email.toLowerCase() }, (err, user) => {
-    if (err) { return done(err); }
+    if (err) { return done(err) }
     if (!user) {
-      return done(null, false, { msg: `Email ${email} not found.` });
+      return done(null, false, { msg: `Email ${email} not found.` })
     }
     if (!user.password) {
-      return done(null, false, { msg: 'Your account was registered using a sign-in provider. To enable password login, sign in using a provider, and then set a password under your user profile.' });
+      return done(null, false, { msg: 'Your account was registered using a sign-in provider. To enable password login, sign in using a provider, and then set a password under your user profile.' })
     }
     user.comparePassword(password, (err, isMatch) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (isMatch) {
-        return done(null, user);
+        return done(null, user)
       }
-      return done(null, false, { msg: 'Invalid email or password.' });
-    });
-  });
-}));
+      return done(null, false, { msg: 'Invalid email or password.' })
+    })
+  })
+}))
 
 /**
  * OAuth Strategy Overview
@@ -77,45 +77,45 @@ passport.use(new SnapchatStrategy({
 }, (req, accessToken, refreshToken, profile, done) => {
   if (req.user) {
     User.findOne({ snapchat: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Snapchat account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a Snapchat account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.snapchat = profile.id;
-          user.tokens.push({ kind: 'snapchat', accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile.bitmoji.avatarUrl;
+          if (err) { return done(err) }
+          user.snapchat = profile.id
+          user.tokens.push({ kind: 'snapchat', accessToken })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.picture = user.profile.picture || profile.bitmoji.avatarUrl
           user.save((err) => {
-            req.flash('info', { msg: 'Snapchat account has been linked.' });
-            done(err, user);
-          });
-        });
+            req.flash('info', { msg: 'Snapchat account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ snapchat: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
-      const user = new User();
+      const user = new User()
       // Similar to Twitter & Instagram APIs, assign a temporary e-mail address
       // to get on with the registration process. It can be changed later
       // to a valid e-mail address in Profile Management.
-      user.email = `${profile.id}@snapchat.com`;
-      user.snapchat = profile.id;
-      user.tokens.push({ kind: 'snapchat', accessToken });
-      user.profile.name = profile.displayName;
-      user.profile.picture = profile.bitmoji.avatarUrl;
+      user.email = `${profile.id}@snapchat.com`
+      user.snapchat = profile.id
+      user.tokens.push({ kind: 'snapchat', accessToken })
+      user.profile.name = profile.displayName
+      user.profile.picture = profile.bitmoji.avatarUrl
       user.save((err) => {
-        done(err, user);
-      });
-    });
+        done(err, user)
+      })
+    })
   }
-}));
+}))
 
 /**
  * Sign in with Facebook.
@@ -129,53 +129,53 @@ passport.use(new FacebookStrategy({
 }, (req, accessToken, refreshToken, profile, done) => {
   if (req.user) {
     User.findOne({ facebook: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.facebook = profile.id;
-          user.tokens.push({ kind: 'facebook', accessToken });
-          user.profile.name = user.profile.name || `${profile.name.givenName} ${profile.name.familyName}`;
-          user.profile.gender = user.profile.gender || profile._json.gender;
-          user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
+          if (err) { return done(err) }
+          user.facebook = profile.id
+          user.tokens.push({ kind: 'facebook', accessToken })
+          user.profile.name = user.profile.name || `${profile.name.givenName} ${profile.name.familyName}`
+          user.profile.gender = user.profile.gender || profile._json.gender
+          user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`
           user.save((err) => {
-            req.flash('info', { msg: 'Facebook account has been linked.' });
-            done(err, user);
-          });
-        });
+            req.flash('info', { msg: 'Facebook account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ facebook: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
       User.findOne({ email: profile._json.email }, (err, existingEmailUser) => {
-        if (err) { return done(err); }
+        if (err) { return done(err) }
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings.' });
-          done(err);
+          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings.' })
+          done(err)
         } else {
-          const user = new User();
-          user.email = profile._json.email;
-          user.facebook = profile.id;
-          user.tokens.push({ kind: 'facebook', accessToken });
-          user.profile.name = `${profile.name.givenName} ${profile.name.familyName}`;
-          user.profile.gender = profile._json.gender;
-          user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
-          user.profile.location = (profile._json.location) ? profile._json.location.name : '';
+          const user = new User()
+          user.email = profile._json.email
+          user.facebook = profile.id
+          user.tokens.push({ kind: 'facebook', accessToken })
+          user.profile.name = `${profile.name.givenName} ${profile.name.familyName}`
+          user.profile.gender = profile._json.gender
+          user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`
+          user.profile.location = (profile._json.location) ? profile._json.location.name : ''
           user.save((err) => {
-            done(err, user);
-          });
+            done(err, user)
+          })
         }
-      });
-    });
+      })
+    })
   }
-}));
+}))
 
 /**
  * Sign in with GitHub.
@@ -190,52 +190,52 @@ passport.use(new GitHubStrategy({
   if (req.user) {
     User.findOne({ github: profile.id }, (err, existingUser) => {
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already a GitHub account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a GitHub account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.github = profile.id;
-          user.tokens.push({ kind: 'github', accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile._json.avatar_url;
-          user.profile.location = user.profile.location || profile._json.location;
-          user.profile.website = user.profile.website || profile._json.blog;
+          if (err) { return done(err) }
+          user.github = profile.id
+          user.tokens.push({ kind: 'github', accessToken })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.picture = user.profile.picture || profile._json.avatar_url
+          user.profile.location = user.profile.location || profile._json.location
+          user.profile.website = user.profile.website || profile._json.blog
           user.save((err) => {
-            req.flash('info', { msg: 'GitHub account has been linked.' });
-            done(err, user);
-          });
-        });
+            req.flash('info', { msg: 'GitHub account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ github: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
       User.findOne({ email: profile._json.email }, (err, existingEmailUser) => {
-        if (err) { return done(err); }
+        if (err) { return done(err) }
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with GitHub manually from Account Settings.' });
-          done(err);
+          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with GitHub manually from Account Settings.' })
+          done(err)
         } else {
-          const user = new User();
-          user.email = _.get(_.orderBy(profile.emails, ['primary', 'verified'], ['desc', 'desc']), [0, 'value'], null);
-          user.github = profile.id;
-          user.tokens.push({ kind: 'github', accessToken });
-          user.profile.name = profile.displayName;
-          user.profile.picture = profile._json.avatar_url;
-          user.profile.location = profile._json.location;
-          user.profile.website = profile._json.blog;
+          const user = new User()
+          user.email = _.get(_.orderBy(profile.emails, ['primary', 'verified'], ['desc', 'desc']), [0, 'value'], null)
+          user.github = profile.id
+          user.tokens.push({ kind: 'github', accessToken })
+          user.profile.name = profile.displayName
+          user.profile.picture = profile._json.avatar_url
+          user.profile.location = profile._json.location
+          user.profile.website = profile._json.blog
           user.save((err) => {
-            done(err, user);
-          });
+            done(err, user)
+          })
         }
-      });
-    });
+      })
+    })
   }
-}));
+}))
 
 /**
  * Sign in with Twitter.
@@ -248,48 +248,48 @@ passport.use(new TwitterStrategy({
 }, (req, accessToken, tokenSecret, profile, done) => {
   if (req.user) {
     User.findOne({ twitter: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Twitter account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a Twitter account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.twitter = profile.id;
-          user.tokens.push({ kind: 'twitter', accessToken, tokenSecret });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.location = user.profile.location || profile._json.location;
-          user.profile.picture = user.profile.picture || profile._json.profile_image_url_https;
+          if (err) { return done(err) }
+          user.twitter = profile.id
+          user.tokens.push({ kind: 'twitter', accessToken, tokenSecret })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.location = user.profile.location || profile._json.location
+          user.profile.picture = user.profile.picture || profile._json.profile_image_url_https
           user.save((err) => {
-            if (err) { return done(err); }
-            req.flash('info', { msg: 'Twitter account has been linked.' });
-            done(err, user);
-          });
-        });
+            if (err) { return done(err) }
+            req.flash('info', { msg: 'Twitter account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ twitter: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
-      const user = new User();
+      const user = new User()
       // Twitter will not provide an email address.  Period.
       // But a person’s twitter username is guaranteed to be unique
       // so we can "fake" a twitter email address as follows:
-      user.email = `${profile.username}@twitter.com`;
-      user.twitter = profile.id;
-      user.tokens.push({ kind: 'twitter', accessToken, tokenSecret });
-      user.profile.name = profile.displayName;
-      user.profile.location = profile._json.location;
-      user.profile.picture = profile._json.profile_image_url_https;
+      user.email = `${profile.username}@twitter.com`
+      user.twitter = profile.id
+      user.tokens.push({ kind: 'twitter', accessToken, tokenSecret })
+      user.profile.name = profile.displayName
+      user.profile.location = profile._json.location
+      user.profile.picture = profile._json.profile_image_url_https
       user.save((err) => {
-        done(err, user);
-      });
-    });
+        done(err, user)
+      })
+    })
   }
-}));
+}))
 
 /**
  * Sign in with Google.
@@ -302,64 +302,64 @@ const googleStrategyConfig = new GoogleStrategy({
 }, (req, accessToken, refreshToken, params, profile, done) => {
   if (req.user) {
     User.findOne({ google: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser && (existingUser.id !== req.user.id)) {
-        req.flash('errors', { msg: 'There is already a Google account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a Google account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.google = profile.id;
+          if (err) { return done(err) }
+          user.google = profile.id
           user.tokens.push({
             kind: 'google',
             accessToken,
             accessTokenExpires: moment().add(params.expires_in, 'seconds').format(),
-            refreshToken,
-          });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.gender = user.profile.gender || profile._json.gender;
-          user.profile.picture = user.profile.picture || profile._json.picture;
+            refreshToken
+          })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.gender = user.profile.gender || profile._json.gender
+          user.profile.picture = user.profile.picture || profile._json.picture
           user.save((err) => {
-            req.flash('info', { msg: 'Google account has been linked.' });
-            done(err, user);
-          });
-        });
+            req.flash('info', { msg: 'Google account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ google: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
       User.findOne({ email: profile.emails[0].value }, (err, existingEmailUser) => {
-        if (err) { return done(err); }
+        if (err) { return done(err) }
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' });
-          done(err);
+          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' })
+          done(err)
         } else {
-          const user = new User();
-          user.email = profile.emails[0].value;
-          user.google = profile.id;
+          const user = new User()
+          user.email = profile.emails[0].value
+          user.google = profile.id
           user.tokens.push({
             kind: 'google',
             accessToken,
             accessTokenExpires: moment().add(params.expires_in, 'seconds').format(),
-            refreshToken,
-          });
-          user.profile.name = profile.displayName;
-          user.profile.gender = profile._json.gender;
-          user.profile.picture = profile._json.picture;
+            refreshToken
+          })
+          user.profile.name = profile.displayName
+          user.profile.gender = profile._json.gender
+          user.profile.picture = profile._json.picture
           user.save((err) => {
-            done(err, user);
-          });
+            done(err, user)
+          })
         }
-      });
-    });
+      })
+    })
   }
-});
-passport.use('google', googleStrategyConfig);
-refresh.use('google', googleStrategyConfig);
+})
+passport.use('google', googleStrategyConfig)
+refresh.use('google', googleStrategyConfig)
 
 /**
  * Sign in with LinkedIn.
@@ -373,51 +373,51 @@ passport.use(new LinkedInStrategy({
 }, (req, accessToken, refreshToken, profile, done) => {
   if (req.user) {
     User.findOne({ linkedin: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already a LinkedIn account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already a LinkedIn account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.linkedin = profile.id;
-          user.tokens.push({ kind: 'linkedin', accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile.photos[3].value;
+          if (err) { return done(err) }
+          user.linkedin = profile.id
+          user.tokens.push({ kind: 'linkedin', accessToken })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.picture = user.profile.picture || profile.photos[3].value
           user.save((err) => {
-            if (err) { return done(err); }
-            req.flash('info', { msg: 'LinkedIn account has been linked.' });
-            done(err, user);
-          });
-        });
+            if (err) { return done(err) }
+            req.flash('info', { msg: 'LinkedIn account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ linkedin: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
       User.findOne({ email: profile.emails[0].value }, (err, existingEmailUser) => {
-        if (err) { return done(err); }
+        if (err) { return done(err) }
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with LinkedIn manually from Account Settings.' });
-          done(err);
+          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with LinkedIn manually from Account Settings.' })
+          done(err)
         } else {
-          const user = new User();
-          user.linkedin = profile.id;
-          user.tokens.push({ kind: 'linkedin', accessToken });
-          user.email = profile.emails[0].value;
-          user.profile.name = profile.displayName;
-          user.profile.picture = user.profile.picture || profile.photos[3].value;
+          const user = new User()
+          user.linkedin = profile.id
+          user.tokens.push({ kind: 'linkedin', accessToken })
+          user.email = profile.emails[0].value
+          user.profile.name = profile.displayName
+          user.profile.picture = user.profile.picture || profile.photos[3].value
           user.save((err) => {
-            done(err, user);
-          });
+            done(err, user)
+          })
         }
-      });
-    });
+      })
+    })
   }
-}));
+}))
 
 /**
  * Sign in with Instagram.
@@ -430,47 +430,47 @@ passport.use(new InstagramStrategy({
 }, (req, accessToken, refreshToken, profile, done) => {
   if (req.user) {
     User.findOne({ instagram: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already an Instagram account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already an Instagram account that belongs to you. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.instagram = profile.id;
-          user.tokens.push({ kind: 'instagram', accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile._json.data.profile_picture;
-          user.profile.website = user.profile.website || profile._json.data.website;
+          if (err) { return done(err) }
+          user.instagram = profile.id
+          user.tokens.push({ kind: 'instagram', accessToken })
+          user.profile.name = user.profile.name || profile.displayName
+          user.profile.picture = user.profile.picture || profile._json.data.profile_picture
+          user.profile.website = user.profile.website || profile._json.data.website
           user.save((err) => {
-            req.flash('info', { msg: 'Instagram account has been linked.' });
-            done(err, user);
-          });
-        });
+            req.flash('info', { msg: 'Instagram account has been linked.' })
+            done(err, user)
+          })
+        })
       }
-    });
+    })
   } else {
     User.findOne({ instagram: profile.id }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser)
       }
-      const user = new User();
-      user.instagram = profile.id;
-      user.tokens.push({ kind: 'instagram', accessToken });
-      user.profile.name = profile.displayName;
+      const user = new User()
+      user.instagram = profile.id
+      user.tokens.push({ kind: 'instagram', accessToken })
+      user.profile.name = profile.displayName
       // Similar to Twitter API, assigns a temporary e-mail address
       // to get on with the registration process. It can be changed later
       // to a valid e-mail address in Profile Management.
-      user.email = `${profile.username}@instagram.com`;
-      user.profile.website = profile._json.data.website;
-      user.profile.picture = profile._json.data.profile_picture;
+      user.email = `${profile.username}@instagram.com`
+      user.profile.website = profile._json.data.website
+      user.profile.picture = profile._json.data.profile_picture
       user.save((err) => {
-        done(err, user);
-      });
-    });
+        done(err, user)
+      })
+    })
   }
-}));
+}))
 
 /**
  * Tumblr API OAuth.
@@ -486,13 +486,13 @@ passport.use('tumblr', new OAuthStrategy({
 },
 (req, token, tokenSecret, profile, done) => {
   User.findById(req.user._id, (err, user) => {
-    if (err) { return done(err); }
-    user.tokens.push({ kind: 'tumblr', accessToken: token, tokenSecret });
+    if (err) { return done(err) }
+    user.tokens.push({ kind: 'tumblr', accessToken: token, tokenSecret })
     user.save((err) => {
-      done(err, user);
-    });
-  });
-}));
+      done(err, user)
+    })
+  })
+}))
 
 /**
  * Foursquare API OAuth.
@@ -507,13 +507,13 @@ passport.use('foursquare', new OAuth2Strategy({
 },
 (req, accessToken, refreshToken, profile, done) => {
   User.findById(req.user._id, (err, user) => {
-    if (err) { return done(err); }
-    user.tokens.push({ kind: 'foursquare', accessToken });
+    if (err) { return done(err) }
+    user.tokens.push({ kind: 'foursquare', accessToken })
     user.save((err) => {
-      done(err, user);
-    });
-  });
-}));
+      done(err, user)
+    })
+  })
+}))
 
 /**
  * Steam API OpenID.
@@ -524,56 +524,56 @@ passport.use(new OpenIDStrategy({
   returnURL: `${process.env.BASE_URL}/auth/steam/callback`,
   realm: `${process.env.BASE_URL}/`,
   stateless: true,
-  passReqToCallback: true,
+  passReqToCallback: true
 }, (req, identifier, done) => {
-  const steamId = identifier.match(/\d+$/)[0];
-  const profileURL = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${process.env.STEAM_KEY}&steamids=${steamId}`;
+  const steamId = identifier.match(/\d+$/)[0]
+  const profileURL = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${process.env.STEAM_KEY}&steamids=${steamId}`
 
   if (req.user) {
     User.findOne({ steam: steamId }, (err, existingUser) => {
-      if (err) { return done(err); }
+      if (err) { return done(err) }
       if (existingUser) {
-        req.flash('errors', { msg: 'There is already an account associated with the SteamID. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
+        req.flash('errors', { msg: 'There is already an account associated with the SteamID. Sign in with that account or delete it, then link it with your current account.' })
+        done(err)
       } else {
         User.findById(req.user.id, (err, user) => {
-          if (err) { return done(err); }
-          user.steam = steamId;
-          user.tokens.push({ kind: 'steam', accessToken: steamId });
+          if (err) { return done(err) }
+          user.steam = steamId
+          user.tokens.push({ kind: 'steam', accessToken: steamId })
           axios.get(profileURL)
             .then((res) => {
-              const profile = res.data.response.players[0];
-              user.profile.name = user.profile.name || profile.personaname;
-              user.profile.picture = user.profile.picture || profile.avatarmedium;
+              const profile = res.data.response.players[0]
+              user.profile.name = user.profile.name || profile.personaname
+              user.profile.picture = user.profile.picture || profile.avatarmedium
               user.save((err) => {
-                done(err, user);
-              });
+                done(err, user)
+              })
             })
             .catch((err) => {
-              user.save((err) => { done(err, user); });
-              done(err, null);
-            });
-        });
+              user.save((err) => { done(err, user) })
+              done(err, null)
+            })
+        })
       }
-    });
+    })
   } else {
     axios.get(profileURL)
       .then(({ data }) => {
-        const profile = data.response.players[0];
-        const user = new User();
-        user.steam = steamId;
-        user.email = `${steamId}@steam.com`; // steam does not disclose emails, prevent duplicate keys
-        user.tokens.push({ kind: 'steam', accessToken: steamId });
-        user.profile.name = profile.personaname;
-        user.profile.picture = profile.avatarmedium;
+        const profile = data.response.players[0]
+        const user = new User()
+        user.steam = steamId
+        user.email = `${steamId}@steam.com` // steam does not disclose emails, prevent duplicate keys
+        user.tokens.push({ kind: 'steam', accessToken: steamId })
+        user.profile.name = profile.personaname
+        user.profile.picture = profile.avatarmedium
         user.save((err) => {
-          done(err, user);
-        });
+          done(err, user)
+        })
       }).catch((err) => {
-        done(err, null);
-      });
+        done(err, null)
+      })
   }
-}));
+}))
 
 /**
  * Pinterest API OAuth.
@@ -588,13 +588,13 @@ passport.use('pinterest', new OAuth2Strategy({
 },
 (req, accessToken, refreshToken, profile, done) => {
   User.findById(req.user._id, (err, user) => {
-    if (err) { return done(err); }
-    user.tokens.push({ kind: 'pinterest', accessToken });
+    if (err) { return done(err) }
+    user.tokens.push({ kind: 'pinterest', accessToken })
     user.save((err) => {
-      done(err, user);
-    });
-  });
-}));
+      done(err, user)
+    })
+  })
+}))
 
 /**
  * Intuit/QuickBooks API OAuth.
@@ -609,22 +609,22 @@ const quickbooksStrategyConfig = new OAuth2Strategy({
 },
 (res, accessToken, refreshToken, params, profile, done) => {
   User.findById(res.user._id, (err, user) => {
-    if (err) { return done(err); }
-    user.quickbooks = res.query.realmId;
+    if (err) { return done(err) }
+    user.quickbooks = res.query.realmId
     if (user.tokens.filter((vendor) => (vendor.kind === 'quickbooks'))[0]) {
       user.tokens.some((tokenObject) => {
         if (tokenObject.kind === 'quickbooks') {
-          tokenObject.accessToken = accessToken;
-          tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format();
-          tokenObject.refreshToken = refreshToken;
-          tokenObject.refreshTokenExpires = moment().add(params.x_refresh_token_expires_in, 'seconds').format();
-          if (params.expires_in) tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format();
-          return true;
+          tokenObject.accessToken = accessToken
+          tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format()
+          tokenObject.refreshToken = refreshToken
+          tokenObject.refreshTokenExpires = moment().add(params.x_refresh_token_expires_in, 'seconds').format()
+          if (params.expires_in) tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format()
+          return true
         }
-        return false;
-      });
-      user.markModified('tokens');
-      user.save((err) => { done(err, user); });
+        return false
+      })
+      user.markModified('tokens')
+      user.save((err) => { done(err, user) })
     } else {
       user.tokens.push({
         kind: 'quickbooks',
@@ -632,30 +632,30 @@ const quickbooksStrategyConfig = new OAuth2Strategy({
         accessTokenExpires: moment().add(params.expires_in, 'seconds').format(),
         refreshToken,
         refreshTokenExpires: moment().add(params.x_refresh_token_expires_in, 'seconds').format()
-      });
-      user.save((err) => { done(err, user); });
+      })
+      user.save((err) => { done(err, user) })
     }
-  });
-});
-passport.use('quickbooks', quickbooksStrategyConfig);
-refresh.use('quickbooks', quickbooksStrategyConfig);
+  })
+})
+passport.use('quickbooks', quickbooksStrategyConfig)
+refresh.use('quickbooks', quickbooksStrategyConfig)
 
 /**
  * Login Required middleware.
  */
 exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
-    return next();
+    return next()
   }
-  res.redirect('/login');
-};
+  res.redirect('/login')
+}
 
 /**
  * Authorization Required middleware.
  */
 exports.isAuthorized = (req, res, next) => {
-  const provider = req.path.split('/')[2];
-  const token = req.user.tokens.find((token) => token.kind === provider);
+  const provider = req.path.split('/')[2]
+  const token = req.user.tokens.find((token) => token.kind === provider)
   if (token) {
     // Is there an access token expiration and access token expired?
     // Yes: Is there a refresh token?
@@ -667,34 +667,34 @@ exports.isAuthorized = (req, res, next) => {
     if (token.accessTokenExpires && moment(token.accessTokenExpires).isBefore(moment().subtract(1, 'minutes'))) {
       if (token.refreshToken) {
         if (token.refreshTokenExpires && moment(token.refreshTokenExpires).isBefore(moment().subtract(1, 'minutes'))) {
-          res.redirect(`/auth/${provider}`);
+          res.redirect(`/auth/${provider}`)
         } else {
           refresh.requestNewAccessToken(`${provider}`, token.refreshToken, (err, accessToken, refreshToken, params) => {
             User.findById(req.user.id, (err, user) => {
               user.tokens.some((tokenObject) => {
                 if (tokenObject.kind === provider) {
-                  tokenObject.accessToken = accessToken;
-                  if (params.expires_in) tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format();
-                  return true;
+                  tokenObject.accessToken = accessToken
+                  if (params.expires_in) tokenObject.accessTokenExpires = moment().add(params.expires_in, 'seconds').format()
+                  return true
                 }
-                return false;
-              });
-              req.user = user;
-              user.markModified('tokens');
+                return false
+              })
+              req.user = user
+              user.markModified('tokens')
               user.save((err) => {
-                if (err) console.log(err);
-                next();
-              });
-            });
-          });
+                if (err) console.log(err)
+                next()
+              })
+            })
+          })
         }
       } else {
-        res.redirect(`/auth/${provider}`);
+        res.redirect(`/auth/${provider}`)
       }
     } else {
-      next();
+      next()
     }
   } else {
-    res.redirect(`/auth/${provider}`);
+    res.redirect(`/auth/${provider}`)
   }
-};
+}

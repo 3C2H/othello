@@ -15,7 +15,7 @@
     "postinstall": "npm rebuild node-sass",
     "start": "node app.js",
     "nodemon": "nodemon app.js",
-    "test": "nyc mocha --timeout=10000 --exit",
+    "test": "standard && nyc mocha --timeout=10000 --exit",
     "lint": "eslint \"**/*.js\""
   },
   "dependencies": {
