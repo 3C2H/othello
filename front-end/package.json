@@ -15,11 +15,13 @@
     "postinstall": "npm rebuild node-sass",
     "start": "node app.js",
     "nodemon": "nodemon app.js",
-    "test": "nyc mocha --timeout=10000 --exit",
+    "test": "standard && nyc mocha --timeout=10000 --exit",
     "lint": "eslint \"**/*.js\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
+    "@fullcalendar/core": "^4.3.1",
+    "@fullcalendar/daygrid": "^4.3.0",
     "@ladjs/bootstrap-social": "^7.0.2",
     "@octokit/rest": "^16.35.0",
     "axios": "^0.19.0",
@@ -74,10 +76,6 @@
     "pug": "^2.0.4",
     "request": "^2.88.0",
     "stripe": "^7.14.0",
-    "tui-calendar": "^1.12.8",
-    "tui-code-snippet": "^2.1.0",
-    "tui-date-picker": "^4.0.2",
-    "tui-time-picker": "^2.0.2",
     "tumblr.js": "^2.0.2",
     "twilio": "^3.37.1",
     "twit": "^2.2.11",
@@ -93,6 +91,7 @@
     "nyc": "^14.1.1",
     "sinon": "^7.5.0",
     "sinon-mongoose": "^2.3.0",
+    "standard": "^14.3.1",
     "supertest": "^5.0.0-0"
   },
   "engines": {

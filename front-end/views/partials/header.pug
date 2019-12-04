@@ -13,8 +13,10 @@ div.title-banner
       ul.nav.navbar-nav
         li.nav-item-header(class=(title === 'Home') ? 'active' : undefined)
           a.nav-link-header(href='/') Actualités
-        li.nav-item-header(class=(title === 'API Examples') ? 'active' : undefined)
-          a.nav-link-header(href='/api') Agenda
+        //- li.nav-item-header(class=(title === 'API Examples') ? 'active' : undefined)
+        //-   a.nav-link-header(href='/api') Agenda
+        li.nav-item-header(class=(title === 'Calendar') ? 'active' : undefined)
+          a.nav-link-header(href='/calendar') Agenda  
         li.nav-item-header(class=(title === 'Contact') ? 'active' : undefined)
           a.nav-link-header(href='/contact') Activités 
           //- dropdown
