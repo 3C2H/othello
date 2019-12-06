@@ -1,10 +1,14 @@
 import React from 'react';
 import {
   List,
+  Edit,
+  Create,
   Datagrid,
   TextField,
   EmailField,
   UrlField,
+  SimpleForm,
+  TextInput,
 } from 'react-admin';
 
 export const UserList = props => (
@@ -20,4 +24,33 @@ export const UserList = props => (
       <TextField source="company.name" label="Company" />
     </Datagrid>
   </List>
+);
+
+export const UserEdit = props => (
+  <Edit {...props}>
+    <SimpleForm>
+      <TextInput disabled source="id" />
+      <TextInput source="name" />
+      <TextInput source="username" />
+      <TextInput source="email" />
+      <TextInput source="address.street" label="Address" />
+      <TextInput source="phone" />
+      <TextInput source="website" />
+      <TextInput source="company.name" label="Company" />
+    </SimpleForm>
+  </Edit>
+);
+
+export const UserCreate = props => (
+  <Create {...props}>
+    <SimpleForm>
+      <TextInput source="name" />
+      <TextInput source="username" />
+      <TextInput source="email" />
+      <TextInput source="address.street" label="Address" />
+      <TextInput source="phone" />
+      <UrlField source="website" />
+      <TextInput source="company.name" label="Company" />
+    </SimpleForm>
+  </Create>
 );
